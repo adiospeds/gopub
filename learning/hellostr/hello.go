@@ -2,9 +2,11 @@ package hellostr
 
 import "strings"
 
-const frenchPrefix = "Bonjour, "
-const spanishPrefix = "Hola, "
-const englishPrefix = "Hello, "
+const (
+	frenchPrefix  string = "Bonjour, "
+	spanishPrefix        = "Hola, "
+	englishPrefix        = "Hello, "
+)
 
 // Hello - Says hello to the world/person('name') in ('language') French, Spanish or English.
 // Default language is "English" if unknown language is passed
