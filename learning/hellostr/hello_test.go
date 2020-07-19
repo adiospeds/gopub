@@ -6,6 +6,7 @@ import (
 
 func TestHello(t *testing.T) {
 
+	// Writing function inside a function
 	assertString := func(t *testing.T, i int, got, want string) {
 		t.Helper()
 		if got != want {
@@ -35,7 +36,7 @@ func TestHello(t *testing.T) {
 	})
 
 	t.Run("Test without a name and language", func(t *testing.T) {
-		i := -1
+		i := -1 // Just filling this up for our test case with a false value.
 		name := ""
 		language := ""
 		got := Hello(name, language)

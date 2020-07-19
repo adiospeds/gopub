@@ -6,7 +6,8 @@ const frenchPrefix = "Bonjour, "
 const spanishPrefix = "Hola, "
 const englishPrefix = "Hello, "
 
-// Hello - Says hello to the world/person in French, Spanish or English.
+// Hello - Says hello to the world/person('name') in ('language') French, Spanish or English.
+// Default language is "English" if unknown language is passed
 func Hello(name string, language string) string {
 	if name == "" {
 		name = "World"
@@ -15,7 +16,7 @@ func Hello(name string, language string) string {
 }
 
 // languagePrefix - Selects a prefix based on the language selected and returns it.
-// If unknown / no language is gives it returns the English prefix.
+// If unknown/no language is given it returns the English prefix.
 func languagePrefix(language string) string {
 	switch language {
 	case "FRENCH":
@@ -27,4 +28,9 @@ func languagePrefix(language string) string {
 	default:
 		return englishPrefix
 	}
+}
+
+// Bitcoin stuct was created just for the sake of dcoumentation testing.
+type Bitcoin struct {
+	balance float64
 }
