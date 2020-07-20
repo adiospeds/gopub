@@ -1,0 +1,2 @@
+Package redis_master_chk - 
+Compares the master ip reported by redis-server with the master reported by sentinel.
