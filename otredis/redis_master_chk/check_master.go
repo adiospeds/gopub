@@ -26,16 +26,19 @@ func getRedisMaster(ip, rPort, pass string) (op string, err error) {
 }
 
 //getSentinelMaster - Gets the master IP reported by Sentinel command:
-//	sentinel get-master-addr-by-name <podMaster>
-func getSentinelMaster(ip, sPort, podMaster string) (op string, err error) {
-	pass := ""
+//	sentinel masters
+func getSentinelMaster(ip, sPort string) (op string, err error) {
 	srdb := redis.NewSentinelClient(&redis.Options{
-		Addr:     ip + ":" + sPort,
-		Password: pass,
-		DB:       0, // use default DB
+		Addr: ip + ":" + sPort,
+		DB:   0, // use default DB
 	})
-	sMasterInfo, err := srdb.GetMasterAddrByName(ctx, podMaster).Result()
-	sIP := sMasterInfo[0]
+	sMasterInfo, err := srdb.Masters(ctx).Result()
+	sMasterInfoInf := sMasterInfo[0]
+	var sMasterInfoSlice = make([]string, len(sMasterInfoInf.([]interface{})))
+	for i, item := range sMasterInfoInf.([]interface{}) {
+		sMasterInfoSlice[i] = item.(string)
+	}
+	sIP := sMasterInfoSlice[3]
 	return sIP, err
 }
 
@@ -68,12 +71,8 @@ func parseRepInfo(ip, repInfo string) string {
 	return rIP
 }
 
-func chkRequiredFields(ip, podMaster string) {
+func chkRequiredFields(ip string) {
 	if ip == "" {
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
-	if podMaster == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -84,16 +83,15 @@ func main() {
 	rPort := flag.String("redis-port", "6379", "Takes the port on which redis-server is listening.")
 	sPort := flag.String("sentinel-port", "26379", "Takes the port on which sentinel server is listening.")
 	pass := flag.String("pass", "", "Takes the auth password for redis server.")
-	podMaster := flag.String("podMaster", "", "(Required field)\nTakes the pod Master name.")
 	flag.Parse()
-	chkRequiredFields(*ip, *podMaster)
+	chkRequiredFields(*ip)
 
 	repInfo, err := getRedisMaster(*ip, *rPort, *pass)
 	if err != nil {
 		fmt.Printf("%v", err)
 		os.Exit(1)
 	}
-	sIP, err := getSentinelMaster(*ip, *sPort, *podMaster)
+	sIP, err := getSentinelMaster(*ip, *sPort)
 	if err != nil {
 		fmt.Printf("%v", err)
 		os.Exit(1)
